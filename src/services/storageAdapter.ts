@@ -44,9 +44,11 @@ const getSessionService = async () => {
         return loadAppData().learningSessions;
       },
       saveQuizSession: async (session: QuizSession) => {
-        const { saveQuizSession: localSave } =
-          await import('../utils/quizService');
-        localSave(session);
+        const { loadAppData, saveAppData } =
+          await import('../utils/flashcardService');
+        const appData = loadAppData();
+        appData.quizSessions.push(session);
+        saveAppData(appData);
         return true;
       },
       getAllQuizSessions: async () => {
@@ -91,7 +93,8 @@ export async function updateFlashcard(
   updates: UpdateFlashcardInput
 ): Promise<Flashcard | null> {
   const service = await getFlashcardService();
-  return service.updateFlashcard(id, updates);
+  const result = await service.updateFlashcard(id, updates);
+  return result ?? null;
 }
 
 export async function deleteFlashcard(id: string): Promise<boolean> {
@@ -104,7 +107,9 @@ export async function updateCardStatistics(
   wasCorrect: boolean
 ): Promise<boolean> {
   const service = await getFlashcardService();
-  return service.updateCardStatistics(id, wasCorrect);
+  const result = await service.updateCardStatistics(id, wasCorrect);
+  // LocalStorage version returns void, Supabase returns boolean
+  return result ?? true;
 }
 
 export async function batchUpdateCardStatistics(

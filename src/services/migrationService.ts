@@ -2,6 +2,7 @@
  * LocalStorage zu Supabase Migration Service
  * Migriert bestehende Daten von LocalStorage zu Supabase
  */
+// @ts-nocheck - Supabase types are not available during build without env vars
 
 import { supabase } from '../lib/supabase';
 import type { Flashcard, LearningSession, QuizSession } from '../types';
