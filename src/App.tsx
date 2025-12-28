@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { FlashcardProvider, SessionProvider } from './context';
 import { Layout } from './components/Layout';
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary';
+import { MigrationPanel } from './components/MigrationPanel';
 import {
   Dashboard,
   CardManagement,
@@ -34,6 +35,7 @@ function App() {
               </Route>
             </Routes>
           </BrowserRouter>
+          <MigrationPanel />
         </SessionProvider>
       </FlashcardProvider>
     </ErrorBoundary>

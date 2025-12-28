@@ -16,8 +16,8 @@ import {
   createFlashcard as createFlashcardService,
   updateFlashcard as updateFlashcardService,
   deleteFlashcard as deleteFlashcardService,
-  initializeAppData,
-} from '../utils';
+} from '../services/storageAdapter';
+import { initializeAppData } from '../utils';
 
 /**
  * FlashcardContext Value Type
@@ -25,14 +25,14 @@ import {
 interface FlashcardContextValue {
   /** Alle Flashcards */
   flashcards: Flashcard[];
-  /** Lädt Flashcards neu aus LocalStorage */
-  refreshFlashcards: () => void;
+  /** Lädt Flashcards neu aus Storage (LocalStorage oder Supabase) */
+  refreshFlashcards: () => Promise<void>;
   /** Erstellt eine neue Flashcard */
-  addFlashcard: (input: CreateFlashcardInput) => Flashcard;
+  addFlashcard: (input: CreateFlashcardInput) => Promise<Flashcard | null>;
   /** Aktualisiert eine Flashcard */
-  updateFlashcard: (id: string, updates: UpdateFlashcardInput) => void;
+  updateFlashcard: (id: string, updates: UpdateFlashcardInput) => Promise<void>;
   /** Löscht eine Flashcard */
-  removeFlashcard: (id: string) => boolean;
+  removeFlashcard: (id: string) => Promise<boolean>;
   /** Findet eine Flashcard anhand der ID */
   getFlashcard: (id: string) => Flashcard | undefined;
   /** Loading-State */
@@ -60,12 +60,12 @@ export function FlashcardProvider({ children }: FlashcardProviderProps) {
   const [isLoading, setIsLoading] = useState(true);
 
   /**
-   * Lädt alle Flashcards aus LocalStorage
+   * Lädt alle Flashcards aus Storage (LocalStorage oder Supabase)
    */
-  const refreshFlashcards = useCallback(() => {
+  const refreshFlashcards = useCallback(async () => {
     setIsLoading(true);
     try {
-      const cards = getAllFlashcards();
+      const cards = await getAllFlashcards();
       setFlashcards(cards);
     } catch (error) {
       console.error('Error loading flashcards:', error);
@@ -84,19 +84,24 @@ export function FlashcardProvider({ children }: FlashcardProviderProps) {
    * Erstellt eine neue Flashcard
    * Verwendet inkrementelles State-Update statt komplettes Neuladen
    */
-  const addFlashcard = useCallback((input: CreateFlashcardInput): Flashcard => {
-    const newCard = createFlashcardService(input);
-    setFlashcards(prev => [...prev, newCard]);
-    return newCard;
-  }, []);
+  const addFlashcard = useCallback(
+    async (input: CreateFlashcardInput): Promise<Flashcard | null> => {
+      const newCard = await createFlashcardService(input);
+      if (newCard) {
+        setFlashcards(prev => [...prev, newCard]);
+      }
+      return newCard;
+    },
+    []
+  );
 
   /**
    * Aktualisiert eine Flashcard
    * Verwendet inkrementelles State-Update statt komplettes Neuladen
    */
   const updateFlashcard = useCallback(
-    (id: string, updates: UpdateFlashcardInput): void => {
-      const updatedCard = updateFlashcardService(id, updates);
+    async (id: string, updates: UpdateFlashcardInput): Promise<void> => {
+      const updatedCard = await updateFlashcardService(id, updates);
       if (updatedCard) {
         setFlashcards(prev =>
           prev.map(card => (card.id === id ? updatedCard : card))
@@ -110,8 +115,8 @@ export function FlashcardProvider({ children }: FlashcardProviderProps) {
    * Löscht eine Flashcard
    * Verwendet inkrementelles State-Update statt komplettes Neuladen
    */
-  const removeFlashcard = useCallback((id: string): boolean => {
-    const success = deleteFlashcardService(id);
+  const removeFlashcard = useCallback(async (id: string): Promise<boolean> => {
+    const success = await deleteFlashcardService(id);
     if (success) {
       setFlashcards(prev => prev.filter(card => card.id !== id));
     }

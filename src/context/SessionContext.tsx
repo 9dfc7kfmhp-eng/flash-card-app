@@ -11,7 +11,13 @@ import type {
   ActiveLearningSession,
   ActiveQuizSession,
 } from '../types';
-import { loadAppData, saveAppData, batchUpdateCardStatistics } from '../utils';
+import {
+  batchUpdateCardStatistics,
+  saveLearningSession,
+  saveQuizSession,
+  getAllLearningSessions,
+  getAllQuizSessions,
+} from '../services/storageAdapter';
 import { generateUUID } from '../utils/uuid';
 
 /**
@@ -21,7 +27,7 @@ interface SessionContextValue {
   // Learning Session State
   activeLearningSession: ActiveLearningSession | null;
   startLearningSession: (cardIds: string[]) => void;
-  endLearningSession: () => LearningSession | null;
+  endLearningSession: () => Promise<LearningSession | null>;
   recordAnswer: (cardId: string, wasCorrect: boolean) => void;
   nextCard: () => void;
   previousCard: () => void;
@@ -33,13 +39,13 @@ interface SessionContextValue {
     type: 'multiple-choice' | 'fill-in-blank',
     cardIds: string[]
   ) => void;
-  endQuizSession: () => QuizSession | null;
+  endQuizSession: () => Promise<QuizSession | null>;
   answerQuizQuestion: (cardId: string, userAnswer: string) => void;
 
   // Session History
   learningSessions: LearningSession[];
   quizSessions: QuizSession[];
-  refreshSessions: () => void;
+  refreshSessions: () => Promise<void>;
 }
 
 // Context erstellen
@@ -86,12 +92,15 @@ export function SessionProvider({ children }: SessionProviderProps) {
   >([]);
 
   /**
-   * Lädt Session-Historie aus LocalStorage
+   * Lädt Session-Historie aus Storage (LocalStorage oder Supabase)
    */
-  const refreshSessions = useCallback(() => {
-    const appData = loadAppData();
-    setLearningSessions(appData.learningSessions);
-    setQuizSessions(appData.quizSessions);
+  const refreshSessions = useCallback(async () => {
+    const [learningSessions, quizSessions] = await Promise.all([
+      getAllLearningSessions(),
+      getAllQuizSessions(),
+    ]);
+    setLearningSessions(learningSessions);
+    setQuizSessions(quizSessions);
   }, []);
 
   /**
@@ -116,39 +125,38 @@ export function SessionProvider({ children }: SessionProviderProps) {
   /**
    * Beendet die aktuelle Lern-Session und speichert sie
    */
-  const endLearningSession = useCallback((): LearningSession | null => {
-    if (!activeLearningSession) return null;
+  const endLearningSession =
+    useCallback(async (): Promise<LearningSession | null> => {
+      if (!activeLearningSession) return null;
 
-    // Performance: Batch-Update aller Card-Statistiken (1x statt 20x)
-    if (pendingUpdates.length > 0) {
-      batchUpdateCardStatistics(pendingUpdates);
-      setPendingUpdates([]); // Reset nach Batch-Update
-    }
+      // Performance: Batch-Update aller Card-Statistiken (1x statt 20x)
+      if (pendingUpdates.length > 0) {
+        await batchUpdateCardStatistics(pendingUpdates);
+        setPendingUpdates([]); // Reset nach Batch-Update
+      }
 
-    const duration = Math.floor(
-      (Date.now() - activeLearningSession.startTime) / 1000
-    );
+      const duration = Math.floor(
+        (Date.now() - activeLearningSession.startTime) / 1000
+      );
 
-    const session: LearningSession = {
-      id: generateUUID(),
-      date: Date.now(),
-      cardsReviewed: activeLearningSession.cards,
-      correctCards: activeLearningSession.correctInSession,
-      incorrectCards: activeLearningSession.incorrectInSession,
-      duration,
-    };
+      const session: LearningSession = {
+        id: generateUUID(),
+        date: Date.now(),
+        cardsReviewed: activeLearningSession.cards,
+        correctCards: activeLearningSession.correctInSession,
+        incorrectCards: activeLearningSession.incorrectInSession,
+        duration,
+      };
 
-    // Speichere Session in LocalStorage
-    const appData = loadAppData();
-    appData.learningSessions.push(session);
-    saveAppData(appData);
+      // Speichere Session in Storage (LocalStorage oder Supabase)
+      await saveLearningSession(session);
 
-    // Räume aktive Session auf
-    setActiveLearningSession(null);
-    refreshSessions();
+      // Räume aktive Session auf
+      setActiveLearningSession(null);
+      await refreshSessions();
 
-    return session;
-  }, [activeLearningSession, pendingUpdates, refreshSessions]);
+      return session;
+    }, [activeLearningSession, pendingUpdates, refreshSessions]);
 
   /**
    * Zeichnet eine Antwort auf und aktualisiert Statistiken
@@ -235,7 +243,7 @@ export function SessionProvider({ children }: SessionProviderProps) {
   /**
    * Beendet die aktuelle Quiz-Session
    */
-  const endQuizSession = useCallback((): QuizSession | null => {
+  const endQuizSession = useCallback(async (): Promise<QuizSession | null> => {
     if (!activeQuizSession) return null;
 
     const correctAnswers = activeQuizSession.questions.filter(
@@ -257,14 +265,12 @@ export function SessionProvider({ children }: SessionProviderProps) {
       completed: true,
     };
 
-    // Speichere Session in LocalStorage
-    const appData = loadAppData();
-    appData.quizSessions.push(session);
-    saveAppData(appData);
+    // Speichere Session in Storage (LocalStorage oder Supabase)
+    await saveQuizSession(session);
 
     // Räume aktive Session auf
     setActiveQuizSession(null);
-    refreshSessions();
+    await refreshSessions();
 
     return session;
   }, [activeQuizSession, refreshSessions]);
