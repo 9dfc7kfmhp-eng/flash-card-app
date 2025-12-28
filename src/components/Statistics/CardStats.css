@@ -1,0 +1,247 @@
+.card-stats-container {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.card-stats-table-wrapper {
+  overflow-x: auto;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.card-stats-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+
+.card-stats-table thead {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.card-stats-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.card-stats-table th:hover {
+  background: #e2e8f0;
+}
+
+.card-stats-table tbody tr {
+  border-bottom: 1px solid #f1f5f9;
+  transition: all 0.2s;
+}
+
+.card-stats-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.card-stats-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.card-stats-table td {
+  padding: 1rem;
+}
+
+/* Status row coloring */
+.card-stats-table tbody tr.status-new {
+  background: rgba(148, 163, 184, 0.05);
+}
+
+.card-stats-table tbody tr.status-learning {
+  background: rgba(245, 158, 11, 0.05);
+}
+
+.card-stats-table tbody tr.status-learned {
+  background: rgba(16, 185, 129, 0.05);
+}
+
+.card-stats-table tbody tr.status-new:hover {
+  background: rgba(148, 163, 184, 0.1);
+}
+
+.card-stats-table tbody tr.status-learning:hover {
+  background: rgba(245, 158, 11, 0.1);
+}
+
+.card-stats-table tbody tr.status-learned:hover {
+  background: rgba(16, 185, 129, 0.1);
+}
+
+/* Cell styling */
+.cell-spanish,
+.cell-english {
+  font-weight: 500;
+  color: #1e293b;
+}
+
+.cell-number {
+  text-align: center;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.cell-correct {
+  color: #10b981;
+}
+
+.cell-incorrect {
+  color: #ef4444;
+}
+
+.cell-date {
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+/* Rate bar */
+.cell-rate {
+  min-width: 120px;
+}
+
+.rate-bar-container {
+  position: relative;
+  height: 24px;
+  background: #f1f5f9;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.rate-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  transition: width 0.3s ease;
+  border-radius: 12px;
+}
+
+.rate-bar.success {
+  background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+}
+
+.rate-bar.warning {
+  background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
+}
+
+.rate-bar.danger {
+  background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
+}
+
+.rate-label {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #1e293b;
+  z-index: 1;
+}
+
+/* Status badge */
+.cell-status {
+  text-align: center;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.375rem 0.875rem;
+  border-radius: 12px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-badge.status-new {
+  background: #f1f5f9;
+  color: #64748b;
+  border: 2px solid #cbd5e1;
+}
+
+.status-badge.status-learning {
+  background: #fef3c7;
+  color: #d97706;
+  border: 2px solid #fbbf24;
+}
+
+.status-badge.status-learned {
+  background: #d1fae5;
+  color: #059669;
+  border: 2px solid #34d399;
+}
+
+/* Empty state */
+.card-stats-empty {
+  background: white;
+  border-radius: 16px;
+  padding: 4rem 2rem;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.card-stats-empty p {
+  font-size: 1.125rem;
+  color: #64748b;
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .card-stats-table {
+    font-size: 0.875rem;
+  }
+
+  .card-stats-table th,
+  .card-stats-table td {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .rate-bar-container {
+    min-width: 100px;
+  }
+
+  .status-badge {
+    padding: 0.25rem 0.625rem;
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .card-stats-table {
+    font-size: 0.8125rem;
+  }
+
+  .card-stats-table th,
+  .card-stats-table td {
+    padding: 0.625rem 0.375rem;
+  }
+
+  .rate-bar-container {
+    min-width: 80px;
+    height: 20px;
+  }
+
+  .rate-label {
+    font-size: 0.75rem;
+  }
+}

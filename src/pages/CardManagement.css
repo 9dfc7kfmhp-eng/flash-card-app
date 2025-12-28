@@ -1,0 +1,299 @@
+.card-management {
+  animation: fadeIn 0.3s ease-in;
+}
+
+.management-header {
+  margin-bottom: 2rem;
+}
+
+.management-header h1 {
+  margin: 0 0 0.5rem 0;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.management-header .subtitle {
+  margin: 0;
+  font-size: 1.125rem;
+  color: #64748b;
+}
+
+.cards-section {
+  margin-top: 3rem;
+}
+
+.cards-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.search-box {
+  position: relative;
+  flex: 1;
+  min-width: 300px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.25rem;
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.875rem 3rem 0.875rem 3rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.clear-search {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  color: #94a3b8;
+  padding: 0.25rem;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.clear-search:hover {
+  color: #64748b;
+}
+
+.results-count {
+  font-size: 0.9375rem;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: #f8fafc;
+  border-radius: 16px;
+  border: 2px dashed #cbd5e1;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.5rem;
+  color: #1e293b;
+}
+
+.empty-state p {
+  margin: 0 0 1.5rem 0;
+  color: #64748b;
+  font-size: 1rem;
+}
+
+.btn-secondary {
+  padding: 0.75rem 1.5rem;
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  border-color: #6366f1;
+  color: #6366f1;
+  background: #f8fafc;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  background: white;
+}
+
+.cards-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.cards-table thead {
+  background: #f8fafc;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.cards-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.cards-table th.sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s;
+}
+
+.cards-table th.sortable:hover {
+  background: #f1f5f9;
+}
+
+.cards-table tbody tr {
+  border-bottom: 1px solid #e2e8f0;
+  transition: background 0.2s;
+}
+
+.cards-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.cards-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.cards-table td {
+  padding: 1rem;
+  font-size: 1rem;
+}
+
+.spanish-col {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.english-col {
+  color: #475569;
+}
+
+.stats-col {
+  min-width: 180px;
+}
+
+.success-rate {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.rate-bar {
+  flex: 1;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.rate-fill {
+  height: 100%;
+  transition: width 0.3s ease;
+  border-radius: 4px;
+}
+
+.rate-text {
+  font-weight: 600;
+  font-size: 0.875rem;
+  min-width: 40px;
+  text-align: right;
+}
+
+.stats-detail {
+  font-size: 0.8125rem;
+  color: #64748b;
+}
+
+.not-practiced {
+  font-style: italic;
+}
+
+.date-col {
+  color: #64748b;
+  font-size: 0.9375rem;
+}
+
+.actions-col {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.btn-action {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  padding: 0.5rem;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s;
+  margin-left: 0.25rem;
+}
+
+.btn-edit:hover {
+  background: #eff6ff;
+  transform: scale(1.1);
+}
+
+.btn-delete:hover {
+  background: #fef2f2;
+  transform: scale(1.1);
+}
+
+@media (max-width: 768px) {
+  .management-header h1 {
+    font-size: 2rem;
+  }
+
+  .cards-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-box {
+    min-width: 100%;
+  }
+
+  .results-count {
+    text-align: center;
+  }
+
+  .cards-table {
+    font-size: 0.875rem;
+  }
+
+  .cards-table th,
+  .cards-table td {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .stats-col {
+    min-width: 150px;
+  }
+}
